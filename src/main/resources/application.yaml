@@ -45,3 +45,9 @@ spring:
     password: ${DB_PASSWORD}
 server:
   port: ${SERVER_PORT:8080}   # prod에서는 환경변수로 포트를 받도록 설정
+---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,conditions,beans
