@@ -19,7 +19,6 @@ repositories {
 }
 
 dependencies {
-
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     // jpa 사용할 때 추가
