@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+// jsp로 하려면 의존성이랑 세팅할게 많아서 그냥 html 사용
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판</title>
+</head>
+<body>
+<h1>게시판</h1>
+
+<form id="boardForm">
+    <input id="title" placeholder="제목" required>
+    <input id="writer" placeholder="작성자" required>
+    <textarea id="content" placeholder="내용" required></textarea>
+    <button type="submit">등록</button>
+</form>
+
+<hr>
+
+<div id="boardList"></div>
+
+<script>
+    async function loadBoards() {
+        const response = await fetch('/api/boards');
+        const boards = await response.json();
+
+        const boardList = document.getElementById('boardList');
+        boardList.innerHTML = '';
+
+        boards.forEach(board => {
+            const item = document.createElement('div');
+            item.innerHTML = `
+            <h3>${board.title}</h3>
+            <p>${board.content}</p>
+            <small>작성자: ${board.writer}</small>
+            <button onclick="deleteBoard(${board.id})">삭제</button>
+            <hr>
+          `;
+            boardList.appendChild(item);
+        });
+    }
+
+    async function deleteBoard(id) {
+        await fetch(`/api/boards/${id}`, {
+            method: 'DELETE'
+        });
+
+        loadBoards();
+    }
+
+    document.getElementById('boardForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const data = {
+            title: document.getElementById('title').value,
+            writer: document.getElementById('writer').value,
+            content: document.getElementById('content').value
+        };
+
+        await fetch('/api/boards', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        event.target.reset();
+        loadBoards();
+    });
+
+    loadBoards();
+</script>
+</body>
+</html>
